@@ -1,10 +1,10 @@
 #!/home/wangzihanggg/miniconda3/envs/pytorch/bin/python
 # -*- coding: utf-8 -*-
-run_dir = "/home/wangzihanggg/codespace/bike/bike_vision_ws/src"
+run_dir = "/home/wangzihanggg/codespace/bike/bike_vision_ws"
 
 import sys
-sys.path.append("{}/bike_vision/seg_runway/scripts".format(run_dir))
-sys.path.append("{}/bike_vision/detect_roadblock/scripts".format(run_dir))
+sys.path.append("{}/src/bike_vision/seg_runway".format(run_dir))
+sys.path.append("{}/src/bike_vision/detect_roadblock".format(run_dir))
 
 from pydoc import importfile
 import time
@@ -19,25 +19,26 @@ from cv2 import getTickCount
 from collections import deque
 from termcolor import colored
 
-from seg_runway.scripts.detect_one_image import detect_one_image
-from seg_runway.scripts.net.unet_bigger import UNetBig
-from detect_roadblock.scripts.bike_yolo import YOLO
-from params import device, unet_model_path, yolo_model_path, yolo_classes_path
-from post_process import post_process
+from seg_runway.detect_one_image import detect_one_image
+from seg_runway.net.unet import UNet
+from detect_roadblock.bike_yolo import YOLO
+from params.params import device, unet_model_path, yolo_model_path, yolo_classes_path
+from utils.post_process import post_process
 from bike_vision.msg import vision_msg
 
 class BikeVision():
 	def __init__(self):
-		self.debug = False
+		self.debug = True
 		self.device = device
 		self.unet_model = self.unet_init(unet_model_path)
 		self.yolo_model = self.yolo_init(yolo_model_path, yolo_classes_path)
 		self.init_subscriber()
 		self.init_publisher()
+		print("DEBUG MODE: ", self.debug)
 
 	def unet_init(self, weight_path):
 		if os.path.exists(weight_path):
-			net = UNetBig(in_channels=3, out_channels=1, init_features=8, WithActivateLast=False).to(device)
+			net = UNet(in_channels=3, out_channels=1, init_features=8, WithActivateLast=False).to(device)
 			net.load_state_dict(torch.load(weight_path, map_location=device))
 			print(colored('Unet Init Success!', 'green'))
 			return net
@@ -51,7 +52,7 @@ class BikeVision():
 			print(colored('YOLO Init Success!', 'green'))
 			return net
 		else:
-			print(colored('Unet Init Failed!', 'red'))
+			print(colored('YOLO Init Failed!', 'red'))
 			return
 		
 	def astra_color_to_cv2(self, img_msg):
