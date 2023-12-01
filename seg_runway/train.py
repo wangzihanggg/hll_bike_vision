@@ -21,7 +21,7 @@ if __name__ == '__main__':
     net = UNet(in_channels=3, out_channels=1, init_features=8, WithActivateLast=False).to(device)
     opt = optim.Adam(net.parameters())
     loss_fun = nn.BCELoss()
-    train_data_loader = DataLoader(UnetDataset(train_data_path, train_transform), batch_size=8, shuffle=True)
+    train_data_loader = DataLoader(UnetDataset(train_data_path, train_transform), batch_size=32, shuffle=True)
     print("start train")
 
     train_losses = []
@@ -47,9 +47,9 @@ if __name__ == '__main__':
 
             train_losses.append(train_loss.item())
 
-            plt.plot(train_losses, label='Train Loss', color='blue')
-            plt.pause(0.1)
-            plt.draw()  # 更新图形
+        plt.plot(train_losses, label='Train Loss', color='blue')
+        plt.pause(0.1)
+        plt.draw()  # 更新图形
 
         if epoch % 5 == 0:
             torch.save(net.state_dict(), weight_path_dir + f'/2023_epoch_{epoch}_loss_{train_loss.item()}.pth')

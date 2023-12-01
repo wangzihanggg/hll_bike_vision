@@ -87,21 +87,21 @@ class BikeVision():
 		# Publish new image
 		self.pub_result_img.publish(msg)
 
-	def publish_detect_result_to_ros(self, servo_angle, roadblock_distance):
+	def publish_detect_result_to_ros(self, servo_angle, roadblock_distance, stop_bike):
 		vision_status = vision_msg()
 		vision_status.header = rospy.Header()
 		vision_status.servo_angle = servo_angle
 		vision_status.roadblock_distance = roadblock_distance
+		vision_status.stop_bike = stop_bike
 		self.pub_vision_status.publish(vision_status)
 
 	def sub_astra_color_depth_callback(self, astra_color_img):
-		cv_color_img = self.astra_color_to_cv2(astra_color_img)
+		cv_color_img = cv2.cvtColor(self.astra_color_to_cv2(astra_color_img), cv2.COLOR_BGR2RGB)
 		small_image, unet_image = detect_one_image(cv_color_img, self.unet_model, self.device)
-		small_image = cv2.cvtColor(small_image, cv2.COLOR_BGR2RGB)
 		yolo_label, yolo_conf, yolo_boxes = None, None, None
 		yolo_label, yolo_conf, yolo_boxes = self.yolo_model.detect_image(small_image)
-		servo_angle, roadblock_distance = post_process(unet_image, small_image, self.cv_depth_img, yolo_label, yolo_conf, yolo_boxes, self.debug)
-		self.publish_detect_result_to_ros(servo_angle, roadblock_distance)
+		servo_angle, roadblock_distance, stop_bike = post_process(unet_image, small_image, self.cv_depth_img, yolo_label, yolo_conf, yolo_boxes, self.debug)
+		self.publish_detect_result_to_ros(servo_angle, roadblock_distance, stop_bike)
 		cv2.waitKey(1)
 		
 		

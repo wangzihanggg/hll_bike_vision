@@ -161,3 +161,5 @@ cython_debug/
 .vscode/
 
 .mp4
+
+*/datasets/

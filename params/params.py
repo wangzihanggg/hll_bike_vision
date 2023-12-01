@@ -7,7 +7,7 @@ import torch
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-unet_model_path = '/home/wangzihanggg/codespace/bike/bike_vision_ws/src/bike_vision/checkpoints/unet.pth'
+unet_model_path = '/home/wangzihanggg/codespace/bike/bike_vision_ws/src/bike_vision/checkpoints/unet4.pth'
 
 yolo_model_path = '/home/wangzihanggg/codespace/bike/bike_vision_ws/src/bike_vision/checkpoints/yolo.pth'
 yolo_classes_path = '/home/wangzihanggg/codespace/bike/bike_vision_ws/src/bike_vision/checkpoints/bike_obstacle_classes.txt'

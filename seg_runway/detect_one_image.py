@@ -1,5 +1,6 @@
 #!/home/wangzihanggg/miniconda3/envs/pytorch/bin/python
 # -*- coding:utf-8 _*-
+import cv2
 import torch
 from utils.resize_image_keep_scale import resize_image_fixed
 from utils.transform import train_transform

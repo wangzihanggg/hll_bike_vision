@@ -1,3 +1,4 @@
 Header header
 int16 servo_angle
-int16 roadblock_distance
+float32 roadblock_distance
+bool stop_bike
